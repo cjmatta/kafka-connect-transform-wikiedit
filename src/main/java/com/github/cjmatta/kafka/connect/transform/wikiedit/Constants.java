@@ -53,18 +53,18 @@ public class Constants {
         )
         .field(
             ISNEW,
-            SchemaBuilder.bool().defaultValue(false).optional().doc("Is this a new page?").build()
+            SchemaBuilder.bool().defaultValue(false).doc("Is this a new page?").build()
         )
         .field(
             ISMINOR,
-            SchemaBuilder.bool().defaultValue(false).optional().doc("Is this edit minor?").build()
+            SchemaBuilder.bool().defaultValue(false).doc("Is this edit minor?").build()
         )
         .field(
             ISBOT,
-            SchemaBuilder.bool().defaultValue(false).optional().doc("Is this an edit by a bot?").build()
+            SchemaBuilder.bool().defaultValue(false).doc("Is this an edit by a bot?").build()
         )
         .field(
             ISUNPATROLLED,
-            SchemaBuilder.bool().defaultValue(false).optional().doc("Is this edit unpatrolled?").build()
+            SchemaBuilder.bool().defaultValue(false).doc("Is this edit unpatrolled?").build()
         ).build();
 }
