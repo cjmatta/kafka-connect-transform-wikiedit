@@ -13,6 +13,7 @@ package com.github.cjmatta.kafka.connect.transform.wikiedit; /**
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.apache.kafka.clients.producer.internals.DefaultPartitioner;
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.data.Schema;
@@ -38,26 +39,35 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
         }
 
         Struct inputRecord = (Struct) record.value();
-        Struct returnStruct;
 
+// Try parsing this message, if it fails, send it to the config.deadLetterTopic
         try {
-            returnStruct = this.parseMessage(inputRecord.getString(this.config.fieldMessage));
+
+            Struct returnStruct = this.parseMessage(inputRecord.getString(this.config.fieldMessage));
             returnStruct.put(Constants.CREATEDAT, inputRecord.get("createdat"));
             returnStruct.put(Constants.CHANNEL, inputRecord.get("channel"));
+            return record.newRecord(
+                record.topic(),
+                record.kafkaPartition(),
+                record.keySchema(),
+                record.key(),
+                returnStruct.schema(),
+                returnStruct,
+                record.timestamp()
+            );
         } catch (IllegalStateException e) {
-            returnStruct = inputRecord;
+
+            DefaultPartitioner partitioner = new DefaultPartitioner();
+            return record.newRecord(
+                config.deadLetterTopic,
+                null,
+                record.keySchema(),
+                record.key(),
+                record.valueSchema(),
+                record.value(),
+                record.timestamp()
+            );
         }
-
-
-        return record.newRecord(
-            record.topic(),
-            record.kafkaPartition(),
-            record.keySchema(),
-            record.key(),
-            returnStruct.schema(),
-            returnStruct,
-            record.timestamp()
-        );
 
     }
 
