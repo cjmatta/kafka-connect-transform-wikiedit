@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 
 public class WikiEditTransformation<R extends ConnectRecord<R>> implements Transformation<R> {
     private static final Logger log = LoggerFactory.getLogger(WikiEditTransformation.class);
+    WikiEditTransformationConfig config;
 
     @Override
     public ConnectRecord apply(ConnectRecord record) {
@@ -37,7 +38,7 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
         }
 
         Struct inputRecord = (Struct) record.value();
-        Struct returnStruct = this.parseMessage(inputRecord.getString("message"));
+        Struct returnStruct = this.parseMessage(inputRecord.getString(this.config.fieldMessage));
         returnStruct.put(Constants.CREATEDAT, inputRecord.get("createdat"));
         returnStruct.put(Constants.CHANNEL, inputRecord.get("channel"));
 
@@ -78,7 +79,7 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
 
     @Override
     public ConfigDef config() {
-        return null;
+        return WikiEditTransformationConfig.config();
     }
 
     @Override
@@ -88,6 +89,6 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
 
     @Override
     public void configure(Map<String, ?> map) {
-
+        this.config = new WikiEditTransformationConfig(map);
     }
 }
