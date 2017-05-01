@@ -1,3 +1,5 @@
+package com.github.cjmatta.kafka.connect.transform.wikiedit;
+
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;
 import org.apache.kafka.connect.data.Timestamp;
