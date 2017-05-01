@@ -38,9 +38,16 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
         }
 
         Struct inputRecord = (Struct) record.value();
-        Struct returnStruct = this.parseMessage(inputRecord.getString(this.config.fieldMessage));
-        returnStruct.put(Constants.CREATEDAT, inputRecord.get("createdat"));
-        returnStruct.put(Constants.CHANNEL, inputRecord.get("channel"));
+        Struct returnStruct;
+
+        try {
+            returnStruct = this.parseMessage(inputRecord.getString(this.config.fieldMessage));
+            returnStruct.put(Constants.CREATEDAT, inputRecord.get("createdat"));
+            returnStruct.put(Constants.CHANNEL, inputRecord.get("channel"));
+        } catch (IllegalStateException e) {
+            returnStruct = inputRecord;
+        }
+
 
         return record.newRecord(
             record.topic(),
@@ -54,10 +61,11 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
 
     }
 
-    private Struct parseMessage (String message) {
+    private Struct parseMessage (String message) throws IllegalStateException {
         String pattern ="\\[\\[(.*)\\]\\]\\s(.*)\\s(.*)\\s\\*\\s(.*)\\s\\*\\s\\(([\\+|\\-].\\d*)\\)\\s?(.*)?$";
         Pattern wikiPattern = Pattern.compile(pattern);
         Matcher matcher = wikiPattern.matcher(message);
+
         matcher.matches();
 
         Struct outputRecord = new Struct(Constants.SCHEMA);
