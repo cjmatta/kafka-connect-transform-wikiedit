@@ -55,18 +55,22 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
                 returnStruct,
                 record.timestamp()
             );
+//            This message failed parsing
         } catch (IllegalStateException e) {
 
-            DefaultPartitioner partitioner = new DefaultPartitioner();
-            return record.newRecord(
-                config.deadLetterTopic,
-                null,
-                record.keySchema(),
-                record.key(),
-                record.valueSchema(),
-                record.value(),
-                record.timestamp()
-            );
+            if (this.config.saveUnparseableMessages) {
+                return record.newRecord(
+                    config.deadLetterTopic,
+                    null,
+                    record.keySchema(),
+                    record.key(),
+                    record.valueSchema(),
+                    record.value(),
+                    record.timestamp()
+                );
+            } else {
+                return null;
+            }
         }
 
     }
