@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 
 public class WikiEditTransformation<R extends ConnectRecord<R>> implements Transformation<R> {
     private static final Logger log = LoggerFactory.getLogger(WikiEditTransformation.class);
+    private final  String pattern ="\\[\\[(.*)\\]\\]\\s(.*)\\s(.*)\\s\\*\\s(.*)\\s\\*\\s\\(([\\+|\\-].\\d*)\\)\\s?(.*)?$";
+    private final Pattern wikiPattern = Pattern.compile(pattern);
     WikiEditTransformationConfig config;
 
     @Override
@@ -76,9 +78,7 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
     }
 
     private Struct parseMessage (String message) throws IllegalStateException {
-        String pattern ="\\[\\[(.*)\\]\\]\\s(.*)\\s(.*)\\s\\*\\s(.*)\\s\\*\\s\\(([\\+|\\-].\\d*)\\)\\s?(.*)?$";
-        Pattern wikiPattern = Pattern.compile(pattern);
-        Matcher matcher = wikiPattern.matcher(message);
+        Matcher matcher = this.wikiPattern.matcher(message);
 
         matcher.matches();
 
