@@ -1,8 +1,6 @@
 package com.github.cjmatta.kafka.connect.transform.wikiedit;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.kafka.common.config.AbstractConfig;
-import org.apache.kafka.common.config.Config;
 import org.apache.kafka.common.config.ConfigDef;
 
 import java.util.Map;

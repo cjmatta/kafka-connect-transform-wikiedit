@@ -13,7 +13,7 @@ package com.github.cjmatta.kafka.connect.transform.wikiedit; /**
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import org.apache.kafka.clients.producer.internals.DefaultPartitioner;
+
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.data.Schema;
@@ -34,7 +34,7 @@ public class WikiEditTransformation<R extends ConnectRecord<R>> implements Trans
     WikiEditTransformationConfig config;
 
     @Override
-    public ConnectRecord apply(ConnectRecord record) {
+    public R apply(R record) {
         if (null == record.valueSchema() || Schema.Type.STRUCT != record.valueSchema().type()) {
             log.trace("record.valueSchema() is null or record.valueSchema() is not a struct.");
             return record;
